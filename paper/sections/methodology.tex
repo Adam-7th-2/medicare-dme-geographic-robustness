@@ -1,0 +1,35 @@
+\subsection{Data Source and Study Population}
+We used the 2023 CMS \emph{Medicare Durable Medical Equipment, Devices \& Supplies--by Geography and Service} public-use dataset \citep{cmsdme2023}. The downloaded file contained 38,675 aggregate records, of which 37,028 had the geography level labeled \texttt{State}. That designation encompassed 60 geographic categories, including some that were not U.S. states or Washington, DC. For the primary analysis, we retained the 50 states and Washington, DC, resulting in 36,528 records across 51 areas and 1,250 HCPCS codes. The 60-category exploratory analysis is explicitly distinguished from the 51-area primary analysis. Records are aggregate observations, not individual beneficiaries.
+
+The actual-payment target was \texttt{Avg\_Suplr\_Mdcr\_Pymt\_Amt}; the standardized-payment target was \texttt{Avg\_Suplr\_Mdcr\_Stdzd\_Amt}. Geographic area was identified using \texttt{Rfrg\_Prvdr\_Geo\_Desc}, equipment using \texttt{HCPCS\_Cd}, and rental classification using \texttt{Suplr\_Rentl\_Ind}. Both target fields were analyzed on identical positive-valued records. Other payment-derived amounts were not used as prediction features. Metrics are computed over aggregate rows without service-volume weighting unless stated otherwise.
+
+\subsection{Validation and Prediction Baselines}
+A preliminary experiment randomly divided the 60-category records into 80\% training and 20\% testing rows, with random seed 42. The global-mean baseline predicted the overall training payment mean; the HCPCS baseline predicted the training mean for each observed HCPCS code, falling back to the global training mean for unseen codes. A further preliminary comparison repeated random row splits and geographic group splits over 30 seeds. Because test compositions were not matched, differences between the resulting errors are interpreted descriptively.
+
+The main evaluation used \emph{leave-one-area-out} validation over 51 areas. At each iteration, one entire area was excluded from training, and training means were computed from the other 50 areas. Each record appeared exactly once in the resulting held-out predictions. Both observed and standardized payment targets used the same record partitions. For rental-aware analysis, let $c_i$ and $r_i$ denote record $i$'s HCPCS code and rental indicator. For target $t\in\{A,S\}$, prediction was
+\begin{equation}
+\hat y_i^{(t)}=\begin{cases}
+\bar y_{c_i,r_i,\mathrm{train}}^{(t)},&\text{pair observed in training},\\
+\bar y_{c_i,\mathrm{train}}^{(t)},&\text{code but not pair observed},\\
+\bar y_{\mathrm{train}}^{(t)},&\text{code not observed}.
+\end{cases}
+\label{eq:rentalaware}
+\end{equation}
+This hierarchy estimates all means exclusively within the training areas. It is a mean-based baseline, not a trained neural network or Random Forest.
+
+\subsection{Error and Geographic Reliability Metrics}
+With target $y_i$, prediction $\hat y_i$, and $n$ test rows, mean absolute error and root mean squared error were calculated as
+\begin{align}
+\mathrm{MAE}&=\frac1n\sum_{i=1}^n|y_i-\hat y_i|,\label{eq:mae}\\
+\mathrm{RMSE}&=\sqrt{\frac1n\sum_{i=1}^n(y_i-\hat y_i)^2}.\label{eq:rmse}
+\end{align}
+For area $s$ with $n_s$ test observations, the area-specific error was $\mathrm{MAE}_s=n_s^{-1}\sum_{i:g_i=s}|y_i-\hat y_i|$. We report $\mathrm{MAE}_{\mathrm{macro}}=|S|^{-1}\sum_s\mathrm{MAE}_s$, $\mathrm{MAE}_{\mathrm{micro}}=(\sum_s n_s\mathrm{MAE}_s)/(\sum_s n_s)$, and worst-area error $\max_s\mathrm{MAE}_s$. For target $t$, pooled normalized MAE was $\mathrm{MAE}_{\mathrm{micro}}^{(t)}/\bar y_{\mathrm{pooled}}^{(t)}$; area NMAE used $\mathrm{MAE}_s^{(t)}/\bar y_s^{(t)}$. Mean payment denominators were positive. These ratios are not mean absolute percentage errors and remain sensitive to target scale and area composition.
+
+If $K$ and $U$ denote rows with known and unseen HCPCS codes, respectively, the total error obeys
+\begin{equation}
+\mathrm{MAE}_{\mathrm{overall}}=\frac{n_K}{n}\mathrm{MAE}_K+\frac{n_U}{n}\mathrm{MAE}_U.\label{eq:decomp}
+\end{equation}
+A preliminary geographic-gap statistic was defined as $\Delta_{\mathrm{geo}}=\mathrm{MAE}_{\mathrm{geographic}}-\mathrm{MAE}_{\mathrm{random}}$. It does not isolate a causal effect of geography when the test sets differ.
+
+\subsection{Within-Group Payment Variation}
+To compare geographic variability on a consistent equipment basis, we grouped data by the joint HCPCS code and rental indicator. Groups represented in at least ten geographic areas were retained. For group $c$, we calculated $\mathrm{CV}_c=s_c/\bar y_c$, where $s_c$ is the sample standard deviation of area-level payment amounts and $\bar y_c$ their arithmetic mean. The coefficient was calculated separately for actual and standardized payment fields, producing 916 paired group-level comparisons. CV calculations were unweighted by service count.

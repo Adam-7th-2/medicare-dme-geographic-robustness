@@ -1,0 +1,131 @@
+
+\documentclass[11pt,a4paper]{article}
+
+% ============================================
+% PAGE AND FONT FORMATTING
+% ============================================
+
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+
+% ============================================
+% MATHEMATICS
+% ============================================
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ============================================
+% FIGURES AND TABLES
+% ============================================
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{placeins}
+
+\graphicspath{
+    {figures/}
+    {../results/figures/}
+}
+
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{9pt plus 2pt minus 2pt}
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+
+% ============================================
+% CITATIONS AND LINKS
+% ============================================
+
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+
+% ============================================
+% DOCUMENT SPACING
+% ============================================
+
+\setstretch{1.12}
+
+% ============================================
+% TITLE AND AUTHOR
+% ============================================
+
+\title{
+Beyond Prediction Accuracy:
+Evaluating Geographic Robustness and Reliability
+in Machine Learning Models for Medicare
+Durable Medical Equipment Payments
+}
+
+\author{
+\textbf{Henok Tariku Yadeta}$^{1}$\\[4pt]
+\normalsize $^{1}$Moscow Institute of Physics
+and Technology (MIPT)\\
+\normalsize Moscow, Russia\\[3pt]
+\small
+\href{mailto:henoktariku@phystech.edu}
+{henoktariku@phystech.edu}
+}
+
+\date{October 2026}
+
+% ============================================
+% BEGIN DOCUMENT
+% ============================================
+
+\begin{document}
+
+\maketitle
+
+% ABSTRACT
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+% INTRODUCTION
+\section{Introduction}
+\label{sec:introduction}
+\input{sections/introduction}
+
+% RELATED WORK
+\section{Related Work}
+\label{sec:related}
+\input{sections/related_work}
+
+% DATASET AND METHODOLOGY
+\section{Dataset and Methodology}
+\label{sec:methods}
+\input{sections/methodology}
+
+% RESULTS
+\section{Results}
+\label{sec:results}
+\input{sections/results}
+
+\FloatBarrier
+
+% DISCUSSION
+\section{Discussion}
+\label{sec:discussion}
+\input{sections/discussion}
+
+% CONCLUSION
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/conclusion}
+
+% ============================================
+% MANUAL REFERENCES
+% ============================================
+
+% references_manual.tex contains the
+% thebibliography environment and 10 entries.
+% Do not run BibTeX for this document.
+
+\input{references_manual}
+
+\end{document}

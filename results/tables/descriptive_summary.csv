@@ -1,0 +1,2 @@
+n_state_records,n_geographic_areas,n_hcpcs_codes,mean_payment,median_payment,sd_payment,iqr_payment,weighted_mean_payment,missing_target
+37028,60,1250,327.7759193053181,39.564630857,1181.0561667686259,185.78510742625,4.672791086760317,0

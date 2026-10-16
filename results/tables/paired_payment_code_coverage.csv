@@ -1,0 +1,5 @@
+target,known_code,records,MAE
+Actual,False,137,746.9969873961335
+Actual,True,36391,45.206295249318366
+Standardized,False,137,741.4856392612809
+Standardized,True,36391,36.23361762260641
